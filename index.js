@@ -36,7 +36,7 @@ app.put('/notes/:id', (request, response) => {
         id: request.params.id,
         note: request.body.note,
         autor: request.body.autor,
-        date: request.body.date,
+        date: new Date(),
     };
     notes[index] = updatedNote;
     response.send(updatedNote);
@@ -47,7 +47,7 @@ app.post('/notes', (request, response) => {
         id: notes.length + 1,
         note: request.body.note,
         autor: request.body.autor,
-        date: request.body.date,
+        date: new Date(),
     };
     notes.push(newNote);
     response.json(notes);
