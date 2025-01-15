@@ -28,10 +28,18 @@ app.get('/notes/:id', (request, response) => {
 });
 
 app.put('/notes/:id', (request, response) => {
-    const id = request.params.id;
-    const note = notes[id];
-    note.note = request.body.note;
-    response.json(note);
+    const index = notes.findIndex((note) => note.id === request.params.id);
+    if (index === -1) {
+        response.status(404).send('Note not found');
+    }
+    const updatedNote = {
+        id: request.params.id,
+        note: request.body.note,
+        autor: request.body.autor,
+        date: request.body.date,
+    };
+    notes[index] = updatedNote;
+    response.send(updatedNote);
 });
 
 app.post('/notes', (request, response) => {
