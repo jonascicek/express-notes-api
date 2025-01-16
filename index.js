@@ -59,12 +59,14 @@ app.post('/notes', (request, response) => {
 
 app.delete('/notes/:id', (request, response) => {
     const id = request.params.id;
+    const initialLength = notes.length;
     notes = notes.filter((note) => note.id !== id);
 
-    if (notes === -1) {
+    if (notes.length === initialLength) {
         response.status(404).send('Note not found');
+    } else {
+        response.send("Note deleted");
     }
-    response.send("Note deleted");
 });
 
 
