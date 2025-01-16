@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const port = process.env.NOTES_API_PORT || 8080;
 
-
 app.listen(port, () => {
     console.log(`server running on http://localhost:${port}`);
 });
@@ -21,14 +20,23 @@ app.get('/notes', (request, response) => {
     response.json(notes);
 });
 
-app.get('/notes/:id', (request, response) => {
-    const id = parseInt(request.params.id);
-    let findNote = null;
-    notes.forEach((note) => {
-        if (note.id === id) {
-            findNote = note;
-        }
-    });
+app.put('/notes/:id', (req, res) => {
+    const note = notes.find(note => note.id === parseInt(req.params.id));
+
+    if (!note) {
+        return res.status(404).json({ message: "Note not found!" });
+    }
+
+    const { note: updatedNote, autor } = req.body;
+    if (!updatedNote || !autor) {
+        return res.status(400).json({ message: "All fields (note, autor) required" });
+    }
+
+    note.note = updatedNote;
+    note.autor = autor;
+    note.date = new Date();
+
+    res.json(note);
 });
 
 app.put('/notes/:id', (request, response) => {
@@ -43,7 +51,7 @@ app.put('/notes/:id', (request, response) => {
         date: new Date(),
     };
     notes[index] = updatedNote;
-    response.send(updatedNote);
+    response.json(updatedNote);
 });
 
 app.post('/notes', (request, response) => {
@@ -58,11 +66,10 @@ app.post('/notes', (request, response) => {
 });
 
 app.delete('/notes/:id', (request, response) => {
-    const id = request.params.id;
-    const initialLength = notes.length;
-    notes = notes.filter((note) => note.id !== id);
+    let id = parseInt(request.params.id);
+    notes.filter((note) => note.id !== id);
 
-    if (notes.length === initialLength) {
+    if (!notes) {
         response.status(404).send('Note not found');
     } else {
         response.send("Note deleted");
