@@ -22,9 +22,13 @@ app.get('/notes', (request, response) => {
 });
 
 app.get('/notes/:id', (request, response) => {
-    const id = request.params.id;
-    const note = notes[id];
-    response.json(note);
+    const id = parseInt(request.params.id);
+    let findNote = null;
+    notes.forEach((note) => {
+        if (note.id === id) {
+            findNote = note;
+        }
+    });
 });
 
 app.put('/notes/:id', (request, response) => {
